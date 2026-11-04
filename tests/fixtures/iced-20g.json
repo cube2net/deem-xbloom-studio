@@ -1,0 +1,65 @@
+{
+  "id": "xbc-1010175",
+  "name": "بارد 🧊",
+  "model": "Studio",
+  "basket": "OTHER",
+  "style": "iced",
+  "dose_g": 20,
+  "grind": 54,
+  "rpm": 60,
+  "ratio": 7.5,
+  "ice_g": null,
+  "countries": [],
+  "roaster": "شارع الوزير",
+  "notes": [],
+  "bean": {
+    "name": "همبيلا Hambela",
+    "region": null,
+    "process": null,
+    "roaster": "شارع الوزير",
+    "varietal": null,
+    "origin_raw": null,
+    "roast_level": null,
+    "tasting_notes": [],
+    "altitude_m_raw": null
+  },
+  "observed_at": "2026-10-10",
+  "source_url": "https://rashf.net/library/xbc-1010175",
+  "share_url": "https://share-h5.xbloom.com/?id=Ipg1e0%2Fl%2Fi4k5D81vAaxFA%3D%3D",
+  "fetched_at": "2026-11-03T22:24:11.931Z",
+  "pours": [
+    {
+      "ml": 40,
+      "temp": 90,
+      "temperature_mode": "numeric_celsius",
+      "flow": 3,
+      "pause": 12,
+      "pattern": "spiral",
+      "agitation": true,
+      "before": true,
+      "rpm": 60
+    },
+    {
+      "ml": 60,
+      "temp": 90,
+      "temperature_mode": "numeric_celsius",
+      "flow": 3,
+      "pause": 10,
+      "pattern": "circular",
+      "agitation": false,
+      "before": false,
+      "rpm": 60
+    },
+    {
+      "ml": 50,
+      "temp": 90,
+      "temperature_mode": "numeric_celsius",
+      "flow": 3,
+      "pause": 10,
+      "pattern": "circular",
+      "agitation": true,
+      "before": false,
+      "rpm": 60
+    }
+  ]
+}

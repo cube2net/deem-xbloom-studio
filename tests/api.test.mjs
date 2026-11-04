@@ -1,0 +1,9 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {requestJson,recipePath,getRecipe,canSendRecipe} from '../src/api.js';
+import {readFileSync} from 'node:fs';
+test('HTML proxy and error pages produce readable source errors, never JSON syntax exceptions',async()=>{for(const status of [200,502])await assert.rejects(requestJson('/api/recipe',{fetcher:async()=>new Response('<!DOCTYPE html><html>proxy</html>',{status})}),e=>!e.message.includes('Unexpected token')&&e.message.includes('صفحة'));});
+test('recipe identity is sent as a query rather than an encoded colon in the path',()=>{const path=recipePath('caf:recipe-1793735016122');const url=new URL(path,'https://deem.test');assert.equal(url.pathname,'/api/recipe');assert.equal(url.searchParams.get('id'),'caf:recipe-1793735016122');});
+test('valid JSON data and source errors remain distinct',async()=>{assert.deepEqual(await requestJson('/api',{fetcher:async()=>Response.json({id:'test'})}),{id:'test'});await assert.rejects(requestJson('/api',{fetcher:async()=>Response.json({error:'المصدر غير متاح'},{status:502})}),/المصدر غير متاح/);});
+test('wrong or incomplete JSON cannot replace a saved recipe',async()=>{await assert.rejects(getRecipe('caf:test',{fetcher:async()=>Response.json({id:'wrong',model:'Studio'})}),/غير مكتملة/);});
+test('complete cached recipes remain sendable when source refresh fails, invalid settings do not',async()=>{const recipe=JSON.parse(readFileSync(new URL('./fixtures/caf-rpm83.json',import.meta.url)));await assert.rejects(getRecipe(recipe.id,{fetcher:async()=>new Response('<!DOCTYPE html>')}));assert.equal(canSendRecipe(recipe,{connected:true,busy:false}),true);assert.equal(canSendRecipe({...recipe,pours:[]},{connected:true,busy:false}),false);assert.equal(canSendRecipe(recipe,{connected:false,busy:false}),false);assert.equal(canSendRecipe(recipe,{connected:true,busy:true}),false);});

@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {matchesRecipe,normalizeSearch} from '../src/search.js';
+import {MachineAlerts} from '../src/alerts.js';
+test('Arabic search ignores diacritics, tatweel, hamza, spacing and digit forms',()=>{assert.equal(normalizeSearch('إثْيُوبـيا ١٨'),'اثيوبيا 18');assert.equal(normalizeSearch('قَهْوَة'),'قهوه');const r={model:'Studio',name:'قهوة إثيوبيا',countries:['Ethiopia'],notes:['فاكهية'],bean:{roaster:'محمصة أورو'},dose_g:18};assert.ok(matchesRecipe(r,'اثيوبيا قهوه'));assert.ok(matchesRecipe(r,'اورو'));assert.ok(matchesRecipe(r,'ETHIOPIA'));assert.equal(matchesRecipe(r,'كولومبيا'),false);assert.equal(matchesRecipe({...r,model:'Original'},'اثيوبيا'),false);});
+test('source style and basket filters apply independently',()=>{const r={model:'Studio',name:'Guji',style:'iced',basket:'OMNI'};assert.ok(matchesRecipe(r,'guji','iced','OMNI'));assert.equal(matchesRecipe(r,'guji','hot'),false);assert.equal(matchesRecipe(r,'guji','','XPOD'),false);});
+test('machine alerts deduplicate repeated telemetry but allow a new event after a transition',()=>{const events=[],alerts=new MachineAlerts({emit:e=>events.push(e)});alerts.connection(true);alerts.state(12);alerts.state(12);assert.equal(events.length,1);alerts.state(1);alerts.state(12);assert.equal(events.length,2);alerts.state(36);assert.equal(events.at(-1).title,'قهوتك جاهزة');alerts.connection(false);alerts.connection(false);assert.equal(events.filter(e=>e.title==='انقطع اتصال المكينة').length,1);});

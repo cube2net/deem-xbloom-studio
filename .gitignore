@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+.openai/
+.codex/
+.DS_Store
+Thumbs.db
+src/fonts/*.woff2
+docs/thmanyah-font-license.pdf

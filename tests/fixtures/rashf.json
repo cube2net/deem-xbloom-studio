@@ -1,0 +1,97 @@
+{
+  "card": {
+    "id": "xbc-1009530",
+    "name": "Ethiopian blend | Tricycle",
+    "bean_name": null,
+    "roaster": null,
+    "countries": [
+      "Ethiopia"
+    ],
+    "process": null,
+    "roast": null,
+    "notes": [],
+    "model": "Studio",
+    "basket": "OTHER",
+    "style": "iced",
+    "dose_g": 20,
+    "ratio": 9,
+    "water_total_ml": 180,
+    "grind": 46,
+    "rpm": 70,
+    "ice_g": null,
+    "pour_count": 3,
+    "pours": [
+      {
+        "water_ml": 60,
+        "pattern": "spiral"
+      },
+      {
+        "water_ml": 60,
+        "pattern": "spiral"
+      },
+      {
+        "water_ml": 60,
+        "pattern": "spiral"
+      }
+    ],
+    "rag": false,
+    "source_url": "https://share-h5.xbloom.com/?id=I1gaMNBg0rPk65cYd4mYVA%3D%3D",
+    "attribution": "community_telegram"
+  },
+  "record": {
+    "id": "xbc-1009530",
+    "name": "Ethiopian blend | Tricycle",
+    "bean": {
+      "name": null,
+      "region": null,
+      "process": null,
+      "roaster": null,
+      "varietal": null,
+      "origin_raw": "Ethiopia",
+      "roast_level": null,
+      "tasting_notes": [],
+      "altitude_m_raw": null
+    },
+    "pours": [
+      {
+        "pattern": "spiral",
+        "water_ml": 60,
+        "flow_ml_s": 3,
+        "pause_after_s": 27,
+        "temperature_c": 92,
+        "vibration_after": false,
+        "temperature_mode": "numeric_celsius",
+        "vibration_before": true
+      },
+      {
+        "pattern": "spiral",
+        "water_ml": 60,
+        "flow_ml_s": 3.2,
+        "pause_after_s": 25,
+        "temperature_c": 92,
+        "vibration_after": false,
+        "temperature_mode": "numeric_celsius",
+        "vibration_before": false
+      },
+      {
+        "pattern": "spiral",
+        "water_ml": 60,
+        "flow_ml_s": 3,
+        "pause_after_s": 0,
+        "temperature_c": 92,
+        "vibration_after": false,
+        "temperature_mode": "numeric_celsius",
+        "vibration_before": false
+      }
+    ],
+    "field_sources": {
+      "origin_raw": {
+        "url": "https://t.me/xbloomcoffee/78316"
+      }
+    },
+    "conflicts": [],
+    "missing_trace": [],
+    "observed_at": "2026-10-10",
+    "grinder_enabled": true
+  }
+}

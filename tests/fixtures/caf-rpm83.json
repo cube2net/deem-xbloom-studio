@@ -1,0 +1,70 @@
+{
+  "id": "caf:recipe-1793735016122",
+  "source": "caf",
+  "name": "مستر بينز قوجي - وضوح",
+  "model": "Studio",
+  "basket": "OMNI",
+  "style": "hot",
+  "dose_g": 14,
+  "grind": 50,
+  "ratio": 17,
+  "water_total_ml": 238,
+  "rpm": 83,
+  "ice_g": null,
+  "countries": [],
+  "roaster": null,
+  "notes": [],
+  "bean": {},
+  "observed_at": null,
+  "source_url": "https://www.caf-xbloom.com/recipes/recipe-1793735016122",
+  "share_url": "https://share-h5.xbloom.com/?id=%2BZlSv9qb8VFsh3MkMRM5cQ%3D%3D",
+  "fetched_at": "2026-11-04T11:14:03.343Z",
+  "unsupported_bypass": false,
+  "details_incomplete": false,
+  "pours": [
+    {
+      "ml": 48,
+      "temp": 94,
+      "temperature_mode": "numeric_celsius",
+      "flow": 3,
+      "pause": 49,
+      "pattern": "circular",
+      "before": false,
+      "agitation": false,
+      "rpm": 83
+    },
+    {
+      "ml": 69,
+      "temp": 94,
+      "temperature_mode": "numeric_celsius",
+      "flow": 3,
+      "pause": 15,
+      "pattern": "circular",
+      "before": false,
+      "agitation": false,
+      "rpm": 83
+    },
+    {
+      "ml": 72,
+      "temp": 94,
+      "temperature_mode": "numeric_celsius",
+      "flow": 3,
+      "pause": 15,
+      "pattern": "circular",
+      "before": false,
+      "agitation": false,
+      "rpm": 83
+    },
+    {
+      "ml": 49,
+      "temp": 94,
+      "temperature_mode": "numeric_celsius",
+      "flow": 3,
+      "pause": 0,
+      "pattern": "circular",
+      "before": false,
+      "agitation": false,
+      "rpm": 83
+    }
+  ]
+}
