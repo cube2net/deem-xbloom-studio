@@ -133,7 +133,7 @@ export default {async fetch(request,env,ctx){
     const name=url.pathname==='/'?'index.html':url.pathname.slice(1);
     const asset=ASSETS[name];
     if(!asset)return new Response('Not found',{status:404});
-    if(typeof asset==='object'&&asset.base64)return new Response(Uint8Array.from(atob(asset.base64),c=>c.charCodeAt(0)),{headers:{'Content-Type':asset.type,'Cache-Control':'public, max-age=31536000, immutable','X-Content-Type-Options':'nosniff'}});
+    if(typeof asset==='object'&&asset.base64)return new Response(Uint8Array.from(atob(asset.base64),c=>c.charCodeAt(0)),{headers:{'Content-Type':asset.type,'Cache-Control':asset.cache||'public, max-age=31536000, immutable','X-Content-Type-Options':'nosniff'}});
     const type=name.endsWith('.html')?'text/html':name.endsWith('.css')?'text/css':'text/javascript';
     return new Response(asset,{headers:{'Content-Type':type+'; charset=utf-8','Cache-Control':'no-cache','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','Permissions-Policy':'bluetooth=(self)','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self' https://*.chatgpt.com https://chatgpt.com; base-uri 'self'; object-src 'none'"}});
   }catch(e){return json({error:e.message||'تعذّر الوصول إلى المصدر'},502);}
