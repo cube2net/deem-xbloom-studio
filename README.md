@@ -27,7 +27,7 @@
 
 ## تغيير صورة المكينة
 
-صورة المكينة في الصفحة الرئيسية هي `src/img/xbloom-studio.svg` (رسم توضيحي). لاستبدالها بصورة حقيقية، ضع صورتك في `src/img/` باسم `xbloom-studio.svg` أو غيّر مسارها في `src/index.html`، ثم شغّل `npm run build`. الصيغ المدعومة: SVG وPNG وJPG وWebP وAVIF.
+صورة المكينة في الصفحة الرئيسية هي `src/img/xbloom-studio.webp` (نسبة 3:4). لاستبدالها ضع صورتك في `src/img/` بالاسم نفسه أو غيّر المسار في `src/index.html`، ثم شغّل `npm run build`. الصيغ المدعومة: SVG وPNG وJPG وWebP وAVIF.
 
 ## التشغيل محليًا
 
