@@ -7,6 +7,4 @@ node_modules/
 .codex/
 .DS_Store
 Thumbs.db
-src/fonts/*.woff2
-src/fonts/*.otf
 docs/thmanyah-font-license.pdf

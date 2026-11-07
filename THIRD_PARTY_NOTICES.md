@@ -42,4 +42,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-Public repository note: Thmanyah font binaries and their bundled PDF are not distributed here. Obtain fonts and review their license at https://font.thmanyah.com/. The public stylesheet uses system fallback fonts.
+Fonts: Cairo (Variable) by Mohamed Gaber, Accademia di Belle Arti di Urbino and Cadson Demak, licensed under the SIL Open Font License 1.1. Files are redistributed from the @fontsource-variable/cairo package in src/fonts/; the license text is in src/fonts/OFL-Cairo.txt.
