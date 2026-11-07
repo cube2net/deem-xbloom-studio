@@ -6,6 +6,7 @@ import {Machine} from './bluetooth.js';
 import {issues} from './protocol.js';
 import {matchesRecipe,normalizeSearch} from './search.js';
 import {MachineAlerts} from './alerts.js';
+import {flow,prefersReducedMotion} from './motion.js';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem('deem:'+key))??fallback;}catch{return fallback;}};
 function save(key,value){try{localStorage.setItem('deem:'+key,JSON.stringify(value));}catch{toast('لم يتم الحفظ: مساحة تخزين المتصفح غير متاحة.');}}
@@ -121,8 +122,10 @@ async function runSearch(){
 }
 async function openRecipe(id){
   if(machine.busy||loadingToMachine){toast('المكينة مشغولة');return;}
-  stopSearch();view='preparation';render();animateView($('#preparationPage'));window.scrollTo({top:0,behavior:'instant'});
-  const token=++selection;const known=recipes.find(r=>r.id===id);selectedFresh=false;selected=known?effective(known):null;
+  stopSearch();const token=++selection;
+  await flow(()=>{view='preparation';render();animateView($('#preparationPage'));window.scrollTo({top:0,behavior:'instant'});});
+  if(token!==selection)return;
+  const known=recipes.find(r=>r.id===id);selectedFresh=false;selected=known?effective(known):null;
   $('#recipeBody').innerHTML=selected?'':'<p>جارٍ قراءة الوصفة من رشْف…</p>';if(selected)renderRecipe();
   $('#preparationPage').hidden=false;
   try{
@@ -161,7 +164,14 @@ machine.addEventListener('telemetry',e=>{const t=e.detail;if(t.state!==undefined
 machine.addEventListener('started',e=>{history.unshift({id:e.detail.id,name:e.detail.name,at:new Date().toISOString(),result:'أكدت المكينة بدء التحضير'});history=history.slice(0,100);save('history',history);render();toast('أكدت المكينة بدء التحضير.');});
 async function connect(){if(machine.connected){$('#helpDialog').showModal();return;}$('#connect').disabled=true;$('#connectMain').disabled=true;$('#machineHint').textContent='جارٍ الاتصال…';try{await machine.connect();toast('اتصلت ديم بالمكينة.');}catch(e){$('#machineHint').textContent=error(e);toast(error(e));}finally{$('#connect').disabled=false;$('#connectMain').disabled=false;}}
 $('#connect').onclick=connect;$('#connectMain').onclick=connect;$('#help').onclick=()=>$('#helpDialog').showModal();$('#closeHelp').onclick=()=>$('#helpDialog').close();$('#disconnect').onclick=()=>{machine.disconnect();$('#helpDialog').close();};
-function showRecipes(target='favorites'){selection++;view=target;scheduleSearch();animateView(target==='history'?$('#historySection'):$('#librarySection'));window.scrollTo({top:0,behavior:'instant'});}
+const viewGroup=v=>v==='history'?'history':v==='preparation'?'preparation':'library';
+function showRecipes(target='favorites'){
+  selection++;
+  const go=()=>{view=target;scheduleSearch();animateView(target==='history'?$('#historySection'):$('#librarySection'));window.scrollTo({top:0,behavior:'instant'});};
+  if(viewGroup(view)===viewGroup(target))go();else flow(go);
+}
+function scrollToLibrary(){$('#librarySection').scrollIntoView({behavior:prefersReducedMotion()?'auto':'smooth',block:'start'});}
+$('#heroStart').onclick=scrollToLibrary;$('#scrollDown').onclick=scrollToLibrary;
 $('#backToRecipes').onclick=()=>showRecipes();$('#browseRecipes').onclick=()=>showRecipes('library');
 $('.brand').onclick=e=>{e.preventDefault();showRecipes();};
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showRecipes(b.dataset.view));
@@ -178,7 +188,7 @@ machine.addEventListener('loaded',e=>{const r=e.detail;$('#sentSettings').innerH
 setInterval(()=>{if(machine.connected&&lastScaleAt&&Date.now()-lastScaleAt>15000)$('#telemetryTime').textContent='آخر قراءة ميزان: '+new Date(lastScaleAt).toLocaleTimeString('ar-SA')+' · بانتظار بيانات جديدة';},5000);
 renderAlerts();
 
-function animateView(element){if(!element||matchMedia("(prefers-reduced-motion: reduce)").matches)return;element.classList.remove("view-enter");void element.offsetWidth;element.classList.add("view-enter");element.addEventListener("animationend",()=>element.classList.remove("view-enter"),{once:true});}
+function animateView(element){if(!element||matchMedia("(prefers-reduced-motion: reduce)").matches)return;element.classList.remove("view-enter");void element.offsetWidth;element.classList.add("view-enter");const done=event=>{if(event.target!==element)return;element.classList.remove("view-enter");element.removeEventListener("animationend",done);};element.addEventListener("animationend",done);}
 document.addEventListener("click",event=>{const button=event.target.closest?.("button");if(!button||button.disabled||!button.isConnected||matchMedia("(prefers-reduced-motion: reduce)").matches)return;const wave=document.createElement("span");wave.className="click-wave";wave.setAttribute("aria-hidden","true");button.append(wave);wave.addEventListener("animationend",()=>wave.remove(),{once:true});});
 
 const brewScreen=setupBrewScreen(machine,{notify:toast});

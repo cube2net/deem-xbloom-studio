@@ -8,4 +8,5 @@ node_modules/
 .DS_Store
 Thumbs.db
 src/fonts/*.woff2
+src/fonts/*.otf
 docs/thmanyah-font-license.pdf
