@@ -166,8 +166,6 @@ function showRecipes(target='favorites'){
   const go=()=>{view=target;scheduleSearch();animateView(target==='history'?$('#historySection'):$('#librarySection'));window.scrollTo({top:0,behavior:'instant'});};
   if(viewGroup(view)===viewGroup(target))go();else flow(go);
 }
-function scrollToLibrary(){$('#librarySection').scrollIntoView({behavior:prefersReducedMotion()?'auto':'smooth',block:'start'});}
-$('#heroStart').onclick=scrollToLibrary;$('#scrollDown').onclick=scrollToLibrary;
 $('#backToRecipes').onclick=()=>showRecipes();$('#browseRecipes').onclick=()=>showRecipes('library');
 $('.brand').onclick=e=>{e.preventDefault();showRecipes();};
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showRecipes(b.dataset.view));
