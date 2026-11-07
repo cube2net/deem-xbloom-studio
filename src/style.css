@@ -115,10 +115,10 @@ footer{background:var(--ink);color:#e2cfb0;border:0;border-radius:34px;margin-bl
 .aside-stage{position:relative;flex:1;min-height:0;padding:10px 0 4px}
 .aside-stage::before{content:"";position:absolute;inset:8% -8% 0;z-index:0;border-radius:50%;background:radial-gradient(closest-side,#e9b873aa 0%,#e9b87344 55%,transparent 100%);animation:glow 5s ease-in-out infinite}
 .machine-box{position:relative;z-index:1;width:100%;height:100%;will-change:transform;animation:machine-in 1.3s var(--ease) .15s both,machine-float 7s ease-in-out 1.6s infinite}
-.hero-machine{position:relative;z-index:1;display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 22px 20px #2a140b55);will-change:transform;animation:machine-shake .16s steps(1,end) infinite}
+.hero-machine{position:relative;z-index:1;display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 22px 20px #2a140b55);will-change:transform;animation:machine-shake 2.8s ease-in-out infinite}
 @keyframes deem-rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes machine-in{0%{opacity:0;transform:translate3d(-120%,0,0) rotate(-10deg) scale(.85)}50%{opacity:1}100%{opacity:1;transform:none}}
-@keyframes machine-shake{0%{transform:translate3d(.9px,.5px,0) rotate(.14deg)}25%{transform:translate3d(-.8px,-.6px,0) rotate(-.12deg)}50%{transform:translate3d(.5px,-.9px,0) rotate(.1deg)}75%{transform:translate3d(-.6px,.7px,0) rotate(-.16deg)}}
+@keyframes machine-shake{0%,100%{transform:translate3d(0,0,0) rotate(0)}25%{transform:translate3d(1.5px,-2px,0) rotate(.25deg)}50%{transform:translate3d(0,-3px,0) rotate(0)}75%{transform:translate3d(-1.5px,-2px,0) rotate(-.25deg)}}
 @keyframes glow{0%,100%{opacity:.7}50%{opacity:1}}
 @keyframes machine-float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-12px,0)}}
 /* compact chrome so recipes and machine fit one tablet screen */
