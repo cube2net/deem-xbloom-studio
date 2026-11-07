@@ -247,3 +247,11 @@ header,main,footer{position:relative;z-index:1}
 
 .face-stage{width:min(100%,380px,calc((100dvh - 150px)*.532))}
 .machine-panel>.primary{order:0;margin:4px 0 0}
+/* Keep the animated ribbons inside their box so they never widen the page on phones. */
+.bg-ribbon{overflow:hidden;contain:paint}
+html{overflow-x:clip}
+/* Tablet portrait and phone landscape: keep recipe and machine side by side. */
+.face-stage{width:min(100%,380px,max(250px,calc((100dvh - 150px)*.532)))}
+@media(min-width:700px) and (max-width:850px){.prep-page-grid{grid-template-columns:minmax(0,1fr) minmax(0,310px)}.prep-page-grid>.hero{order:0}.face-stage{max-width:310px}}
+@media(max-height:520px) and (min-width:700px){.prep-actions{top:4px;padding:6px 10px}.prep-actions .actions button{min-height:38px;padding:6px 12px}.prep-page-heading h1{font-size:24px}}
+@media(max-width:360px){.nav{gap:4px}.brand{font-size:30px}nav{gap:1px}.navlink{padding:6px 6px;font-size:10.5px}#favoriteCount{display:none}}
