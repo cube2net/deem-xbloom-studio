@@ -7,9 +7,10 @@ import {issues} from './protocol.js';
 import {matchesRecipe,normalizeSearch} from './search.js';
 import {MachineAlerts} from './alerts.js';
 import {flow,prefersReducedMotion} from './motion.js';
+import {toast} from './toast.js';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem('deem:'+key))??fallback;}catch{return fallback;}};
-function save(key,value){try{localStorage.setItem('deem:'+key,JSON.stringify(value));}catch{toast('لم يتم الحفظ: مساحة تخزين المتصفح غير متاحة.');}}
+function save(key,value){try{localStorage.setItem('deem:'+key,JSON.stringify(value));}catch{toast.error('لم يتم الحفظ: مساحة تخزين المتصفح غير متاحة.');}}
 let recipes=read('recipes',[]),favorites=read('favorites',[]),overrides=read('overrides',{}),history=read('history',[]),next=0,total=0,view='favorites',style='',basket='',loading=false,selected=null,selectedFresh=false,selection=0,loadingToMachine=false;
 let sourceFilter='all',searchBusy=false,searchToken=0,searchAbort=null,searchTimer=null,searchCursors={rashf:0,caf:0},searchScanned=0,searchFailures=0,searchExhausted=false,searchStarted=false,searchHits=new Set();
 const sourceName=r=>r.source==='caf'||r.id.startsWith('caf:')?'كاف':'رشْف';
@@ -39,12 +40,7 @@ $('#enableNotifications').onclick=async()=>{
   try{const permission=await Notification.requestPermission();if(permission!=='granted'){toast('لم يُسمح بالإشعارات. يمكنك تفعيلها من إعدادات الموقع.');return;}await ensureNotificationWorker();notificationsEnabled=true;save('notificationsEnabled',true);renderAlerts();toast('فُعّلت إشعارات المكينة.');}catch(e){toast(error(e));}
 };
 const sum=r=>r.pours.length?r.pours.reduce((n,p)=>n+p.ml,0):(r.water_total_ml||Math.round(r.dose_g*r.ratio)||0);
-let toastTimer;
-function toast(message){$('#toast').textContent=message;$('#toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').hidden=true,4500);}
-let machineNoticeTimer;
-function dismissMachineNotice(){clearTimeout(machineNoticeTimer);const el=$('#machineNotice');if(el.hidePopover)el.hidePopover();else el.hidden=true;}
-function showMachineNotice(item){const el=$('#machineNotice');clearTimeout(machineNoticeTimer);$('#noticeTitle').textContent=item.title;$('#noticeBody').textContent=item.body;el.dataset.kind=item.kind;el.classList.remove('notice-enter');void el.offsetWidth;el.classList.add('notice-enter');if(el.showPopover)el.showPopover();else el.hidden=false;machineNoticeTimer=setTimeout(dismissMachineNotice,5000);}
-$('#dismissNotice').onclick=dismissMachineNotice;
+function showMachineNotice(item){toast[item.kind==='warning'?'warning':item.kind==='success'?'success':'info'](item.title,{description:item.body,duration:5000});}
 function error(e){return e.name==='NotFoundError'?'لم تُختر مكينة. اضغط الاتصال واختر XBLOOM.':e.name==='SecurityError'?'افتح رابط ديم مباشرة في Chrome خارج المعاينة لتفعيل البلوتوث.':e.name==='NetworkError'?'تعذّر الاتصال. قرّب الجهاز وافصل تطبيق xBloom ثم حاول مجددًا.':e.message||'تعذّر إكمال العملية.';}
 const api=(path,signal)=>requestJson(path,{signal});
 function merge(list){const map=new Map(recipes.map(r=>[r.id,r]));cleanRecipes(list).forEach(r=>map.set(r.id,r));recipes=[...map.values()];save('recipes',recipes.slice(-1000));}
@@ -161,8 +157,8 @@ const stateNames={1:'المكينة جاهزة',12:'تحتاج ماء',15:'تن�
 machine.addEventListener('connection',e=>{const on=e.detail;alerts.connection(on);$('#deviceName').textContent=on?(machine.device?.name||'XBLOOM'):'—';if(!on){lastScaleAt=null;$('#telemetryTime').textContent='الميزان غير متصل';$('#deviceFirmware').textContent='—';}$('#connect').classList.toggle('connected',on);$('#connectLabel').textContent=on?(machine.device?.name||'متصل'):'اتصل بالمكينة';$('#connectMain').textContent=on?'المكينة متصلة ✓':'اتصل بمكينة xBloom';$('#machineHint').textContent=on?'متصلة بالبلوتوث':'غير متصلة';$('#machineState').textContent=on?'متصلة · بانتظار حالة المكينة':'بانتظار الاتصال';if(!on){$('#water').textContent='—';$('#coffee').textContent='—';}updateButtons();});
 machine.addEventListener('busy',updateButtons);
 machine.addEventListener('telemetry',e=>{const t=e.detail;if(t.state!==undefined){$('#machineState').textContent=stateNames[t.state]||'حالة غير معروفة: '+t.state.toString(16);alerts.state(t.state);}if(t.firmware)$('#deviceFirmware').textContent=t.firmware;if(t.water!==undefined)$('#water').textContent=t.water.toFixed(1);if(t.coffee!==undefined)$('#coffee').textContent=t.coffee.toFixed(1);if(t.water!==undefined||t.coffee!==undefined){lastScaleAt=Date.now();$('#telemetryTime').textContent='قراءة مباشرة من الميزان · '+new Date().toLocaleTimeString('ar-SA');}updateButtons();});
-machine.addEventListener('started',e=>{history.unshift({id:e.detail.id,name:e.detail.name,at:new Date().toISOString(),result:'أكدت المكينة بدء التحضير'});history=history.slice(0,100);save('history',history);render();toast('أكدت المكينة بدء التحضير.');});
-async function connect(){if(machine.connected){$('#helpDialog').showModal();return;}$('#connect').disabled=true;$('#connectMain').disabled=true;$('#machineHint').textContent='جارٍ الاتصال…';try{await machine.connect();toast('اتصلت ديم بالمكينة.');}catch(e){$('#machineHint').textContent=error(e);toast(error(e));}finally{$('#connect').disabled=false;$('#connectMain').disabled=false;}}
+machine.addEventListener('started',e=>{history.unshift({id:e.detail.id,name:e.detail.name,at:new Date().toISOString(),result:'أكدت المكينة بدء التحضير'});history=history.slice(0,100);save('history',history);render();toast.success('أكدت المكينة بدء التحضير');});
+async function connect(){if(machine.connected){$('#helpDialog').showModal();return;}$('#connect').disabled=true;$('#connectMain').disabled=true;$('#machineHint').textContent='جارٍ الاتصال…';try{await toast.promise(machine.connect(),{loading:'جارٍ الاتصال بالمكينة…',success:'اتصلت ديم بالمكينة',error:e=>error(e)});}catch(e){$('#machineHint').textContent=error(e);}finally{$('#connect').disabled=false;$('#connectMain').disabled=false;}}
 $('#connect').onclick=connect;$('#connectMain').onclick=connect;$('#help').onclick=()=>$('#helpDialog').showModal();$('#closeHelp').onclick=()=>$('#helpDialog').close();$('#disconnect').onclick=()=>{machine.disconnect();$('#helpDialog').close();};
 const viewGroup=v=>v==='history'?'history':v==='preparation'?'preparation':'library';
 function showRecipes(target='favorites'){
