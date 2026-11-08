@@ -255,3 +255,18 @@ html{overflow-x:clip}
 @media(min-width:700px) and (max-width:850px){.prep-page-grid{grid-template-columns:minmax(0,1fr) minmax(0,310px)}.prep-page-grid>.hero{order:0}.face-stage{max-width:310px}}
 @media(max-height:520px) and (min-width:700px){.prep-actions{top:4px;padding:6px 10px}.prep-actions .actions button{min-height:38px;padding:6px 12px}.prep-page-heading h1{font-size:24px}}
 @media(max-width:360px){.nav{gap:4px}.brand{font-size:30px}nav{gap:1px}.navlink{padding:6px 6px;font-size:10.5px}#favoriteCount{display:none}}
+
+/* ===== Dot tiles (after Louis Studios DotTiles): white dot numerals straight on the machine ===== */
+.face-stage .face-read{container-type:inline-size;aspect-ratio:206/204;left:5%;width:42%;color:#fff;font-family:Cairo,system-ui,sans-serif;text-align:start;direction:rtl}
+.face-stage .face-water{top:10%}.face-stage .face-cup{top:56%}
+.face-read>*{position:absolute}
+.face-read>.dt-dots,.face-read>.dt-vis{overflow:visible;display:block;color:#fff}
+.face-read>.dt-vis{color:#fff}
+.dt-title{margin:0;font-size:calc(.143 * 100cqw);line-height:1;font-weight:600;white-space:nowrap;color:#fff;text-shadow:0 1px 6px #000a}
+.dt-sub{line-height:1;white-space:nowrap;color:#ffffff8a;text-shadow:0 1px 6px #000a}
+.dt-unit{text-align:center;line-height:1;font-weight:600;white-space:nowrap;color:#ffffffd1;text-shadow:0 1px 6px #000a}
+.dt-lab{top:calc(.8388 * 100cqw);font-size:calc(.066 * 100cqw);line-height:1;white-space:nowrap;color:#ffffff8a;text-shadow:0 1px 6px #000a}
+.face-read>span:not([class]),.face-read>strong{position:absolute}
+.face-stage .face-read>span.dt-unit,.face-stage .face-read>span.dt-lab{width:auto;height:auto;margin:0;overflow:visible;clip:auto;display:block}
+.face-stage .face-read>span.dt-unit{width:calc(.2913 * 100cqw);color:#ffffffd1;font-size:calc(.073 * 100cqw)}
+.face-stage .face-read>span.dt-lab{font-size:calc(.066 * 100cqw);color:#ffffff8a}
