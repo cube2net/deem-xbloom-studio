@@ -270,3 +270,20 @@ html{overflow-x:clip}
 .face-stage .face-read>span.dt-unit,.face-stage .face-read>span.dt-lab{width:auto;height:auto;margin:0;overflow:visible;clip:auto;display:block}
 .face-stage .face-read>span.dt-unit{width:calc(.2913 * 100cqw);color:#ffffffd1;font-size:calc(.073 * 100cqw)}
 .face-stage .face-read>span.dt-lab{font-size:calc(.066 * 100cqw);color:#ffffff8a}
+
+/* Brew bars: fill while water is poured, drain a thin timer during the pause. */
+.pour-bar{position:relative;overflow:hidden;background:rgba(184,116,58,.1);box-shadow:inset 0 0 0 1px rgba(184,116,58,.28);animation:none}
+.pour-fill{position:absolute;inset:0;background:linear-gradient(180deg,#d9a064,#b8743a);transform-origin:bottom;transform:scaleY(0);will-change:transform}
+.brew-pours.ready .pour-fill{transition:transform .5s linear,opacity .4s}
+.pour-fill:after{content:'';position:absolute;inset:0 0 auto;height:4px;background:#f3cf9c;opacity:0}
+.is-pour .pour-fill:after{animation:pour-edge .7s ease-in-out infinite alternate}
+.is-wait .pour-fill{animation:pour-breathe 1.8s ease-in-out infinite}
+.wait-track{display:block;height:3px;border-radius:2px;background:rgba(184,116,58,.18);overflow:hidden;opacity:0;margin-top:-8px}
+.wait-track i{display:block;height:100%;background:#b8743a;transform-origin:left;transform:scaleX(1)}
+.brew-pours.ready .wait-track i{transition:transform .3s linear}
+.is-wait .wait-track{opacity:1}.brew-pours .wait-track{transition:opacity .3s}
+.brew-pours article.is-idle .pour-bar{opacity:.75}
+.brew-pours article.is-wait>.pour-wait-text{color:#b8743a;font-weight:600}
+@keyframes pour-edge{from{opacity:.25}to{opacity:.95}}
+@keyframes pour-breathe{0%,100%{opacity:1}50%{opacity:.72}}
+@media(prefers-reduced-motion:reduce){.pour-fill,.pour-fill:after,.wait-track{animation:none!important;transition:none!important}}

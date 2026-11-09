@@ -20,3 +20,23 @@ export function machineProblem(state){
   if(Number.isInteger(state)&&!EXPECTED.has(state))return {kind:'unknown',title:'حالة غير متوقعة من المكينة',message:'أبلغت المكينة عن الحالة 0x'+state.toString(16).toUpperCase().padStart(2,'0')+'.',hint:'راجع شاشة المكينة؛ قد تحتاج تنظيفًا أو وضع الكوب أو الفلتر.'};
   return null;
 }
+
+// Interpolated scale reading (grams of water) at time t, from the received samples only.
+export function waterAt(samples,t){
+  if(!samples.length)return null;let prev=null;
+  for(const s of samples){if(s.t>t)return prev?prev.value+(s.value-prev.value)*Math.min(1,(t-prev.t)/Math.max(.001,s.t-prev.t)):null;prev=s;}
+  return prev.value;
+}
+// Per-pour animation state from real scale readings: fill 0..1 while water is poured,
+// then wait 0..1 across the recipe's pause. running=false freezes at the last state.
+export function pourProgress(session,t=session.elapsed(),running=session.status==='active'){
+  const water=waterAt(session.samples.water,t),finished=session.status==='complete'&&!running;let start=0;
+  return session.recipe.pours.map(p=>{
+    const ml=Number(p.ml)||0,end=start+ml,pause=Number(p.pause)||0,tol=Math.min(2,ml*.05),first=start;start=end;
+    if(finished)return {fill:1,wait:1,phase:'done',left:0};
+    const fill=ml>0&&water!==null?Math.min(1,Math.max(0,(water-first)/Math.max(.001,ml-tol))):0;
+    if(fill<1)return {fill,wait:0,phase:fill>0&&running?'pour':'idle',left:pause};
+    const reachedAt=session.samples.water.find(x=>x.t<=t&&x.value>=end-tol)?.t??t,wait=pause?Math.min(1,Math.max(0,(t-reachedAt)/pause)):1;
+    return {fill:1,wait,phase:wait<1&&running?'wait':'done',left:Math.ceil(pause*(1-wait))};
+  });
+}

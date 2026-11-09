@@ -8,3 +8,14 @@ test('brew graph records independent real samples and no target-derived readings
 test('completion freezes time and samples; idle does not claim cup completed',()=>{const s=new BrewSession(recipe,0);s.ingest({water:240,state:0x24},10000);s.ingest({water:0},20000);assert.equal(s.status,'complete');assert.equal(s.elapsed(20000),10);assert.equal(s.latest.water,240);const idle=new BrewSession(recipe,0);idle.ingest({state:0x41},2000);assert.equal(idle.status,'ended');});
 test('disconnect creates no fake scale samples and stopped session stays stopped',()=>{const s=new BrewSession(recipe,0);s.connected=false;s.ingest({water:45},1000);assert.equal(s.samples.water.length,0);s.connected=true;s.ingest({coffee:5},2000);s.finish('stopped',3000);s.ingest({state:0x24},4000);assert.equal(s.status,'stopped');assert.equal(s.elapsed(9000),3);});
 test('empty and zero-weight charts render without NaN, with independently labeled axes',()=>{const s=new BrewSession(recipe,0);for(const n of [0,1000]){s.ingest({water:0},n);const svg=chartSvg(s,n);assert.ok(!svg.includes('NaN'));assert.ok(svg.includes('الوقت (ثانية)'));assert.ok(svg.includes('class="chart-line water"'));assert.ok(!svg.includes('class="chart-line coffee"'));}});
+
+test('pourProgress fills each bar while pouring and runs the wait timer after it',async()=>{
+  const {BrewSession,pourProgress}=await import('../src/brew-session.js');
+  const s=new BrewSession({name:'t',dose_g:15,pours:[{ml:30,pause:10},{ml:70,pause:0}]},1000);
+  assert.deepEqual(pourProgress(s,0).map(p=>p.phase),['idle','idle']);
+  for(let t=0;t<=10;t+=2)s.ingest({water:t*3},1000+t*1000);
+  let p=pourProgress(s,10);assert.equal(p[0].fill,1);assert.equal(p[0].phase,'wait');assert.equal(p[1].fill,0);
+  s.ingest({water:30},1000+15000);p=pourProgress(s,15);assert.equal(p[0].wait,.5);assert.equal(p[0].left,5);
+  s.ingest({water:65},1000+25000);p=pourProgress(s,25);assert.equal(p[0].phase,'done');assert.equal(p[1].phase,'pour');assert.ok(p[1].fill>.4&&p[1].fill<.6);
+  s.finish('complete',1000+40000);assert.ok(pourProgress(s).every(x=>x.fill===1&&x.phase==='done'));
+});
